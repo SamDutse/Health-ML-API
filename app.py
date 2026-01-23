@@ -4,6 +4,11 @@ import joblib
 import numpy as np
 import logging
 
+MODEL_VERSIONS = {
+    "diabetes": "1.0.0",
+    "breast_cancer": "1.0.0"
+}
+
 # ========== LOGGING CONFIG ==========
 logging.basicConfig(
     level=logging.INFO,
@@ -81,4 +86,11 @@ def predict_cancer(data: CancerInput):
         "model": "breast_cancer",
         "prediction": int(prediction),
         "class": label
+    }
+
+@app.get("/version")
+def version():
+    return {
+        "service": "health-ml-api",
+        "models": MODEL_VERSIONS
     }
