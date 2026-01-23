@@ -29,8 +29,27 @@ class CancerInput(BaseModel):
 
 @app.get("/health")
 def health_check():
-    logger.info("Health check called")
-    return {"status": "ok"}
+    try:
+        # Check if models are loaded
+        _ = diabetes_model is not None
+        _ = cancer_model is not None
+
+        logger.info("Health check passed")
+
+        return {
+            "status": "ok",
+            "models_loaded": True,
+            "service": "health-ml-api"
+        }
+
+    except Exception as e:
+        logger.error(f"Health check failed: {str(e)}")
+
+        return {
+            "status": "error",
+            "models_loaded": False,
+            "error": str(e)
+        }
 
 @app.post("/predict/diabetes")
 def predict_diabetes(data: DiabetesInput):
