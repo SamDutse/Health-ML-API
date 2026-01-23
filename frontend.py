@@ -1,50 +1,86 @@
 import streamlit as st
 import requests
 
-API_BASE_URL = "https://health-ml-api-n6ie.onrender.com"
+API_BASE_URL = "https://health-ml-api-n6ie.onrender.com"  # Change this
 
-st.set_page_config(page_title="Health ML Predictor", layout="centered")
-
-st.title("🩺 Health ML Prediction System")
-st.write("Predict diabetes progression and breast cancer classification using ML.")
-
-option = st.selectbox(
-    "Choose Prediction Type",
-    ["Diabetes Progression", "Breast Cancer"]
+st.set_page_config(
+    page_title="Health ML Predictor",
+    page_icon="🩺",
+    layout="centered"
 )
 
+st.title("🩺 Health ML Prediction System")
+st.markdown(
+    """
+    This application uses machine learning models to:
+    - Predict **diabetes disease progression**
+    - Classify **breast cancer tumors**
+
+    ⚠️ *This is a demo system and not a medical diagnosis tool.*
+    """
+)
+
+st.divider()
+
+option = st.radio(
+    "Select Prediction Type",
+    ["Diabetes Progression", "Breast Cancer"],
+    horizontal=True
+)
+
+st.divider()
+
 if option == "Diabetes Progression":
-    st.subheader("Diabetes Prediction")
+    st.subheader("📈 Diabetes Progression Prediction")
+
+    st.info("Enter 10 numeric clinical features")
 
     features = []
-    for i in range(10):
-        val = st.number_input(f"Feature {i+1}", value=0.0)
-        features.append(val)
+    cols = st.columns(2)
 
-    if st.button("Predict Diabetes"):
-        payload = {"features": features}
-        response = requests.post(f"{API_BASE_URL}/predict/diabetes", json=payload)
+    for i in range(10):
+        with cols[i % 2]:
+            val = st.number_input(f"Feature {i+1}", value=0.0)
+            features.append(val)
+
+    if st.button("🔍 Predict Diabetes"):
+        with st.spinner("Calling ML model..."):
+            payload = {"features": features}
+            response = requests.post(f"{API_BASE_URL}/predict/diabetes", json=payload)
 
         if response.status_code == 200:
             result = response.json()
-            st.success(f"Prediction Score: {result['prediction']:.2f}")
+            st.success(f"Predicted Score: **{result['prediction']:.2f}**")
         else:
             st.error("Error calling API")
 
 elif option == "Breast Cancer":
-    st.subheader("Breast Cancer Prediction")
+    st.subheader("🧬 Breast Cancer Classification")
+
+    st.info("Enter 30 numeric tumor features")
 
     features = []
-    for i in range(30):
-        val = st.number_input(f"Feature {i+1}", value=0.0)
-        features.append(val)
+    cols = st.columns(3)
 
-    if st.button("Predict Cancer"):
-        payload = {"features": features}
-        response = requests.post(f"{API_BASE_URL}/predict/cancer", json=payload)
+    for i in range(30):
+        with cols[i % 3]:
+            val = st.number_input(f"Feature {i+1}", value=0.0)
+            features.append(val)
+
+    if st.button("🔍 Predict Cancer"):
+        with st.spinner("Calling ML model..."):
+            payload = {"features": features}
+            response = requests.post(f"{API_BASE_URL}/predict/cancer", json=payload)
 
         if response.status_code == 200:
             result = response.json()
-            st.success(f"Prediction: {result['class'].upper()}")
+            if result["class"] == "malignant":
+                st.error("⚠️ Prediction: **MALIGNANT**")
+            else:
+                st.success("✅ Prediction: **BENIGN**")
         else:
             st.error("Error calling API")
+
+st.divider()
+
+st.caption("Built with FastAPI, Docker, Streamlit, and Scikit-learn")
