@@ -4,7 +4,7 @@ A full-stack, production-ready machine learning system that demonstrates how to 
 
 ### 🔗 Live Links
 
-* **API (Swagger Docs):** *[HealthML_API](https://health-ml-api-n6ie.onrender.com)*
+* **API (Swagger Docs):** *[HealthML_API](https://health-ml-api-n6ie.onrender.com/docs)*
 * **Web App (Streamlit):** *[HealthML_StreamlitUI](https://health-ml-api-o7tuaccsdlh77g2qva2ebs.streamlit.app/)*
 
 ### 🚀 What This Project Shows
